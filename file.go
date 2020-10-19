@@ -40,8 +40,8 @@ func (f *File) Fetch(ctx context.Context) error {
 		return err
 	}
 	req.Close = true
-	if info, err := os.Stat(f.Local); err == nil {
-		req.Header.Set("If-Modified-Since", info.ModTime().Format(http.TimeFormat))
+	if t := f.ModTime(); !t.IsZero() {
+		req.Header.Set("If-Modified-Since", t.Format(http.TimeFormat))
 	}
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
