@@ -9,6 +9,12 @@ Alien::Libasyncns,SKAJI,f
 App::ChangeShebang,SKAJI,f
 ```
 
+# INSTALL
+
+```
+❯ go get -u github.com/skaji/cpan-cat/...
+```
+
 # AUTHOR
 
 Shoichi Kaji

@@ -20,9 +20,9 @@ func run(ctx context.Context, args []string) error {
 	if len(args) > 1 && (args[1] == "-t" || args[1] == "-m") {
 		t := f.ModTime()
 		fmt.Printf(
-			"%s (%s ago)\n",
-			t.Format(time.RFC3339),
+			"06perms.txt: %s ago (%s)\n",
 			time.Since(t).Round(time.Second).String(),
+			t.Format(time.RFC3339),
 		)
 		return nil
 	}
