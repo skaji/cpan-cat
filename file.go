@@ -53,11 +53,18 @@ func (f *File) Fetch(ctx context.Context) error {
 	}()
 	switch res.StatusCode {
 	case http.StatusOK:
+		lastModified, err := http.ParseTime(res.Header.Get("Last-Modified"))
+		if err != nil {
+			return err
+		}
 		tempfile, err := ioutil.TempFile(BaseDir, f.Name)
 		if err != nil {
 			return err
 		}
-		defer os.Remove(tempfile.Name())
+		defer func() {
+			tempfile.Close()
+			os.Remove(tempfile.Name())
+		}()
 		if _, err := io.Copy(tempfile, res.Body); err != nil {
 			return err
 		}
@@ -65,6 +72,9 @@ func (f *File) Fetch(ctx context.Context) error {
 			return err
 		}
 		if err := tempfile.Close(); err != nil {
+			return err
+		}
+		if err := os.Chtimes(tempfile.Name(), lastModified, lastModified); err != nil {
 			return err
 		}
 		if err := os.Rename(tempfile.Name(), f.Local); err != nil {
@@ -81,6 +91,5 @@ func (f *File) Fetch(ctx context.Context) error {
 func (f *File) Cat(ctx context.Context, w io.Writer) error {
 	cmd := exec.CommandContext(ctx, "gzip", "-dc", f.Local)
 	cmd.Stdout = w
-	cmd.Stderr = w
 	return cmd.Run()
 }

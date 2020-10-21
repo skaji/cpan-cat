@@ -31,7 +31,7 @@ func run(ctx context.Context, args []string) error {
 
 func main() {
 	if err := run(context.Background(), os.Args); err != nil {
-		fmt.Fprint(os.Stderr, err)
+		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
 }
